@@ -25,13 +25,11 @@ Dự án được xây dựng hoàn toàn không cần server (Serverless), phù
 
 1. Clone repository về máy:
    ```bash
-   git clone 
+   git clone ...
    ```
 2. Không cần cài đặt bất kỳ dependency nào (như `npm install`).
 3. Khởi chạy file `index.html` bằng Live Server trên VS Code hoặc bất kỳ Web Server tĩnh nào.
 
-## 👨‍💻 Tác Giả & Đơn Vị Phát Triển
-- **Developed by:** [LTP (Lục Thiên Phong)](https://github.com/lucthienphong1120/)
 - **Powered by:** [CRF Network](https://www.crfnetwork.com/)
 
 ---
