@@ -129,28 +129,35 @@ const getCommonOptions = (isPercentage, onHoverCallback, legendElement) => {
             line: { borderWidth: 2, tension: 0.1 }
         },
         onHover: (event, elements, chart) => {
+            // Trên thiết bị cảm ứng (điện thoại/tablet): KHÔNG cho legend chạy theo ngón tay
+            // vì nó tạo khối đen to che mất màn hình. Legend được ghim cố định bên dưới chart.
+            const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
             if (elements && elements.length > 0) {
                 legendElement.style.opacity = '1';
-                const chartRect = chart.canvas.getBoundingClientRect();
-                
-                // Use event.x and event.y from Chart.js for absolute precision
-                let left = event.x + 15;
-                let top = event.y - 15;
-                
-                // Prevent overflow right
-                if (left + legendElement.offsetWidth > chartRect.width) {
-                    left = event.x - legendElement.offsetWidth - 15;
+
+                if (!isTouch) {
+                    const chartRect = chart.canvas.getBoundingClientRect();
+
+                    // Use event.x and event.y from Chart.js for absolute precision
+                    let left = event.x + 15;
+                    let top = event.y - 15;
+
+                    // Prevent overflow right
+                    if (left + legendElement.offsetWidth > chartRect.width) {
+                        left = event.x - legendElement.offsetWidth - 15;
+                    }
+                    // Prevent overflow bottom
+                    if (top + legendElement.offsetHeight > chartRect.height) {
+                        top = event.y - legendElement.offsetHeight - 15;
+                    }
+
+                    legendElement.style.left = left + 'px';
+                    legendElement.style.top = top + 'px';
                 }
-                // Prevent overflow bottom
-                if (top + legendElement.offsetHeight > chartRect.height) {
-                    top = event.y - legendElement.offsetHeight - 15;
-                }
-                
-                legendElement.style.left = left + 'px';
-                legendElement.style.top = top + 'px';
-                
+
                 onHoverCallback(elements[0].index);
-            } else {
+            } else if (!isTouch) {
                 legendElement.style.opacity = '0';
             }
         }
@@ -166,7 +173,14 @@ const initCharts = () => {
         data: { datasets: [] },
         options: getCommonOptions(currentUnit === '%', updateLegendGold, legendGold)
     });
-    document.getElementById('goldChart').addEventListener('mouseout', () => legendGold.style.opacity = '0');
+    // Trên thiết bị cảm ứng: legend luôn hiển thị (nó ghim cố định dưới chart, không chạy theo ngón tay)
+    const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if (isTouch) {
+        legendGold.style.opacity = '1';
+        legendSilver.style.opacity = '1';
+    } else {
+        document.getElementById('goldChart').addEventListener('mouseout', () => legendGold.style.opacity = '0');
+    }
 
     const ctxSilver = document.getElementById('silverChart').getContext('2d');
     silverChart = new Chart(ctxSilver, {
@@ -174,7 +188,9 @@ const initCharts = () => {
         data: { datasets: [] },
         options: getCommonOptions(currentUnit === '%', updateLegendSilver, legendSilver)
     });
-    document.getElementById('silverChart').addEventListener('mouseout', () => legendSilver.style.opacity = '0');
+    if (!isTouch) {
+        document.getElementById('silverChart').addEventListener('mouseout', () => legendSilver.style.opacity = '0');
+    }
 };
 
 const formatDateTooltip = (timestampMs) => {

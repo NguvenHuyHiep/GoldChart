@@ -531,11 +531,27 @@ body {
         height: 300px;
     }
     
+    /* Trên mobile: legend ghim cố định bên dưới chart, KHÔNG chạy theo ngón tay
+       (tránh khối đen che màn hình khi chạm vào chart) */
     .legend-panel {
-        bottom: 10px;
-        right: 10px;
-        padding: 12px;
-        min-width: 150px;
+        position: static;
+        opacity: 1;
+        margin-top: 12px;
+        padding: 10px 12px;
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 8px;
+        box-shadow: none;
+    }
+
+    .legend-panel .legend-date {
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+    }
+
+    .legend-panel .legend-items {
+        gap: 6px;
     }
     
     .legend-item { font-size: 11px; }
@@ -630,19 +646,33 @@ body {
         font-size: 15px;
     }
 
+    /* Legend ghim dưới chart - cân đối 2 bên, giá không tràn sát lề phải */
     .legend-panel {
-        padding: 10px;
-        min-width: 140px;
-        max-width: calc(100% - 16px);
+        padding: 10px 14px;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .legend-item {
         font-size: 11px;
+        gap: 6px;
+    }
+
+    .legend-color {
+        margin-right: 0;
+    }
+
+    .legend-label {
+        flex-grow: 1;
+        white-space: nowrap;
     }
 
     .legend-value {
         font-size: 11px;
         white-space: nowrap;
+        margin-left: 8px;
+        text-align: right;
     }
 
     .modal-content {
